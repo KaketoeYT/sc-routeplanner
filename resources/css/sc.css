@@ -1,0 +1,498 @@
+/* =================================================
+   RESET
+================================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =================================================
+   BASE LAYOUT
+================================================= */
+body {
+    background-color: #0f0f0f;
+    color: #e0e0e0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* =================================================
+   HEADER
+================================================= */
+header {
+    background-color: #1a1a1a;
+    border-bottom: 1px solid #333;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #f1c40f;
+    text-transform: uppercase;
+}
+
+/* =================================================
+   NAVIGATION
+================================================= */
+nav.main-nav {
+    background-color: #161616;
+    border-bottom: 1px solid #2d2d2d;
+    padding: 0 2rem;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links li a {
+    display: block;
+    padding: 12px 15px;
+    color: #888;
+    text-decoration: none;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+    border-bottom: 2px solid transparent;
+}
+
+.nav-links li a:hover {
+    color: #f1c40f;
+    background-color: rgba(241, 196, 15, 0.05);
+}
+
+.nav-links li a.active {
+    color: #f1c40f;
+    border-bottom: 2px solid #f1c40f;
+}
+
+/* =================================================
+   MAIN CONTENT
+================================================= */
+main {
+    flex: 1;
+    padding: 2rem;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* =================================================
+   TABLE (UEX STYLE)
+================================================= */
+.table-uex {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1e1e1e;
+    border: 1px solid #2d2d2d;
+    font-size: 0.9rem;
+}
+
+.table-uex th {
+    background-color: #252525;
+    color: #888;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    padding: 10px 15px;
+    text-align: left;
+    border-right: 1px solid #333;
+    border-bottom: 2px solid #1a1a1a;
+}
+
+.table-uex td {
+    padding: 8px 15px;
+    border-right: 1px solid #2d2d2d;
+    border-bottom: 1px solid #262626;
+}
+
+.table-uex th:last-child,
+.table-uex td:last-child {
+    border-right: none;
+}
+
+.table-uex tr:hover {
+    background-color: #2a2a2a;
+}
+
+/* =================================================
+   TABLE COLOR HELPERS
+================================================= */
+.col-buy {
+    color: #c18e4d;
+    font-weight: bold;
+}
+
+.col-sell {
+    color: #4a9c5d;
+    font-weight: bold;
+}
+
+.col-diff {
+    color: #4f6ebc;
+    font-weight: bold;
+}
+
+/* =================================================
+   UTILITY CLASSES
+================================================= */
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* =================================================
+   FOOTER
+================================================= */
+footer {
+    background-color: #1a1a1a;
+    border-top: 1px solid #333;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+footer a {
+    color: #4f6ebc;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+
+
+
+/* Specifiek voor de locaties in de Route tabel */
+.location-dim {
+    color: #666;
+    font-size: 0.8rem;
+    margin-right: 10px;
+}
+
+.location-terminal {
+    color: #aaa;
+    font-style: italic;
+    font-size: 0.85rem;
+    margin-right: 10px;
+}
+
+/* Zorg dat de kolommen met tekst niet te krap worden */
+.table-uex td:nth-child(2),
+.table-uex td:nth-child(3) {
+    min-width: 200px;
+}
+
+.yellow {
+    color: #f1c40f;
+    font-weight: bold;
+}
+
+
+
+/* Update the table cells to be flex containers */
+.table-uex td:nth-child(2),
+.table-uex td:nth-child(3) {
+    min-width: 300px; /* Increased slightly to give room for the push */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Push the SCU span to the right */
+.location-scu {
+    margin-left: auto; /* This is the magic trick that pushes it to the right */
+    color: #888;
+    font-size: 0.8rem;
+    padding-left: 10px;
+    white-space: nowrap; /* Prevents the SCU from wrapping to a second line */
+}
+
+/* Container for the whole cell to allow right-alignment */
+.location-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Group SCU and Container size on the right */
+.location-data {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* Style for the Container Sizes (e.g., 1/2/4/8) */
+.container-badge {
+    background-color: #2a2a2a;
+    color: #f1c40f; /* Yellow text to match theme */
+    font-size: 0.7rem;
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid #444;
+    font-family: monospace;
+}
+
+/* Distance Column Styling */
+.col-distance {
+    color: #a0a0a0;
+    font-weight: 500;
+}
+
+/* Redefine location-scu to fit the group */
+.location-scu {
+    color: #888;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    min-width: 65px;
+    text-align: right;
+}
+
+/* Ensure cells don't collapse */
+.table-uex td:nth-child(2),
+.table-uex td:nth-child(3) {
+    min-width: 400px; /* Increased to fit name + container + SCU */
+}
+
+/* Wrapper to keep the boxes in a neat row */
+.container-box-wrapper {
+    display: flex;
+    gap: 2px;
+}
+
+/* Adjust SCU to sit nicely next to the boxes */
+.location-scu {
+    color: #888;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Base style for all boxes */
+.size-box {
+    background-color: #161616;
+    color: #888; /* Dimmer color for non-max sizes */
+    border: 1px solid #3d3d3d;
+    font-size: 0.7rem;
+    font-weight: bold;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    padding: 0 4px;
+}
+
+/* The Highlighted Max Size */
+.size-box.max-size {
+    color: #f1c40f;
+}
+
+/* =================================================
+   FILTERS SECTION
+================================================= */
+filters {
+    display: block;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #1a1a1a;
+    border: 1px solid #2d2d2d;
+    border-left: 4px solid #f1c40f; /* Accent "active" bar */
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 300px;
+}
+
+/* Label for the filter (optional: add a label tag if needed) */
+.filter-group::before {
+    content: "SELECT SHIP";
+    font-size: 0.65rem;
+    color: #666;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+}
+
+/* =================================================
+   SELECT BOX STYLING
+================================================= */
+.filter-select {
+    background-color: #0f0f0f;
+    color: #f1c40f; /* Yellow text */
+    border: 1px solid #3d3d3d;
+    padding: 8px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    appearance: none; /* Removes default browser arrow */
+    
+    /* Custom Arrow */
+    background-image: linear-gradient(45deg, transparent 50%, #f1c40f 50%),
+                      linear-gradient(135deg, #f1c40f 50%, transparent 50%);
+    background-position: calc(100% - 20px) calc(1em + 2px),
+                         calc(100% - 15px) calc(1em + 2px);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+}
+
+.filter-select:hover, .filter-select:focus {
+    border-color: #f1c40f;
+    background-color: #161616;
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.1);
+}
+
+/* Styling the dropdown options */
+.filter-select optgroup {
+    background-color: #1a1a1a;
+    color: #888;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 0.75rem;
+    margin-top: 10px;
+}
+
+.filter-select option {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    padding: 10px;
+    text-transform: none; /* Keeps ship names readable */
+}
+
+/* Hide the native scrollbar in the dropdown if possible */
+.filter-select::-webkit-scrollbar {
+    width: 8px;
+}
+.filter-select::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+
+.route-row {
+    transition: background-color 0.3s ease;
+}
+
+/* Custom Dropdown Container */
+.custom-select-wrapper {
+    position: relative;
+    user-select: none;
+    width: 300px;
+}
+
+/* The Trigger Box */
+.custom-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #0f0f0f;
+    border: 1px solid #3d3d3d;
+    color: #f1c40f;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.custom-select-trigger:hover {
+    border-color: #f1c40f;
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.1);
+}
+
+.custom-select-trigger .arrow {
+    width: 0; 
+    height: 0; 
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #f1c40f;
+}
+
+/* The Dropdown Menu */
+.custom-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #1a1a1a;
+    border: 1px solid #3d3d3d;
+    border-top: none;
+    z-index: 100;
+    max-height: 400px;
+    overflow-y: auto;
+    display: none; /* Hidden by default */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+/* Show when open */
+.custom-select-wrapper.open .custom-options {
+    display: block;
+}
+
+/* Category Labels (Aegis, Drake, etc.) */
+.optgroup-label {
+    padding: 12px 12px 5px 12px;
+    font-size: 0.65rem;
+    color: #f1c40f;
+    font-weight: 800;
+    letter-spacing: 1px;
+    background: #222;
+    border-bottom: 1px solid #333;
+}
+
+/* Individual Ship Options */
+.option {
+    padding: 10px 15px;
+    font-size: 0.85rem;
+    color: #e0e0e0;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.option:hover {
+    background: #2a2a2a;
+    color: #fff;
+}
+
+.option.selected {
+    background: rgba(241, 196, 15, 0.1);
+    color: #f1c40f;
+}
+
+.opt-scu {
+    color: #666;
+    font-size: 0.75rem;
+    margin-left: 5px;
+}
+
+/* Scrollbar Styling for that UEX feel */
+.custom-options::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-options::-webkit-scrollbar-track {
+    background: #111;
+}
+.custom-options::-webkit-scrollbar-thumb {
+    background: #333;
+}
+.custom-options::-webkit-scrollbar-thumb:hover {
+    background: #f1c40f;
+}
+
