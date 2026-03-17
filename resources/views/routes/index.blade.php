@@ -28,7 +28,9 @@
                     
                     @foreach($vehiclesGrouped as $company => $ships)
                         @php
-                            $shipsWithScu = collect($ships)->filter(fn($v) => $v['scu'] > 0);
+                            // Only include ships that are released (not concept) AND have SCU > 0
+                            $shipsWithScu = collect($ships)
+                                ->filter(fn($v) => ($v['scu'] > 0) && !$v['is_concept']);
                         @endphp
 
                         @if($shipsWithScu->isNotEmpty())

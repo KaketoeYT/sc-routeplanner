@@ -11,7 +11,11 @@ class RoutesController extends Controller
     public function index(Request $request)
     {
         $routeService = new RoutesService();
-        $routes = $routeService->getRoutes();
+        $routes = collect($routeService->getRoutes())
+            ->filter(fn ($route) => isset($route['profit'])) //  see if routes exist
+            ->sortByDesc('profit') // highest profit first
+            ->take(250) // limit showing
+            ->values();
 
         $vehicleService = new VehiclesService();
         $vehicles = $vehicleService->getVehicles();
