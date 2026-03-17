@@ -65,20 +65,6 @@
 
         <tbody>
             @foreach($routes as $route)
-                @php
-                    $buyTotal = ($route['price_origin'] * $route['scu_origin']) ?? 0;
-                    $sellTotal = ($route['price_destination'] * $route['scu_destination']) ?? 0;
-                    $profit = ($buyTotal > 0 && $sellTotal > 0) ? ($sellTotal - $buyTotal) : null;
-
-                    $origin_name = shortenLocation( $route['origin_terminal_name'] );
-                    $destination_name = shortenLocation( $route['destination_terminal_name'] );
-
-                    // if the profit is negative, we can skip the route.
-                    if ($profit < 0)
-                    {
-                        continue;
-                    }
-                @endphp
 
                 <tr class="route-row"
                     data-route-scu="{{ $route['scu_origin'] }}"
@@ -110,7 +96,9 @@
                                         </span>
                                     @endforeach
                                 </div>
-                                <span class="location-scu route-scu-origin">{{ number_format($route['scu_origin']) }} SCU</span>
+                                <span class="location-scu route-scu-origin">
+                                    {{ number_format($route['used_scu']) }} SCU
+                                </span>
                             </div>
                         </div>
                     </td>
@@ -120,7 +108,7 @@
                             <div class="location-names">
                                 <span class="location-dim">{{ $route['destination_star_system_name'] }}</span> 
                                 <span class="location-terminal">{{ $route['destination_planet_name'] }}</span>
-                                <span class="yellow">{{ $destination_name }}</span>
+                                <span class="yellow">{{ shortenLocation($route['destination_terminal_name']) }}</span>
                             </div>
                                 <div class="location-data">
                                     <div class="container-box-wrapper">
@@ -134,7 +122,9 @@
                                             </span>
                                         @endforeach
                                     </div>
-                                    <span class="location-scu route-scu-destination">{{ number_format($route['scu_destination']) }} SCU</span>
+                                    <span class="location-scu route-scu-destination">
+                                        {{ number_format($route['used_scu']) }} SCU
+                                    </span>
                                 </div>
                         </div>
                     </td>
@@ -144,13 +134,19 @@
                     </td>
 
                     <td class="text-right col-buy">
-                        <span class="route-buy">{{ number_format($route['price_origin'] * $route['scu_origin']) }}</span>
+                        <span class="route-buy">
+                            {{ number_format($route['buy_total']) }}
+                        </span>
                     </td>
+
                     <td class="text-right col-sell">
-                        <span class="route-sell">{{ number_format($route['price_destination'] * $route['scu_destination']) }}</span>
+                        <span class="route-sell">
+                            {{ number_format($route['sell_total']) }}
+                        </span>
                     </td>
+
                     <td class="text-right col-diff route-profit">
-                        {{ ($route['price_destination'] * $route['scu_destination']) - ($route['price_origin'] * $route['scu_origin']) }}
+                        {{ number_format($route['profit']) }}
                     </td>
                 </tr>
             @endforeach
@@ -244,7 +240,7 @@
 
                     // Set value and manually trigger the 'change' event for your existing script
                     hiddenInput.value = val;
-                    hiddenInput.dispatchEvent(new Event('change'));
+                    window.location.href = `?ship_scu=${val}`;
                 });
             });
         });

@@ -10,20 +10,43 @@ class RoutesController extends Controller
 {
     public function index(Request $request)
     {
+        $selectedScu = (int) $request->get('ship_scu', 0);
+
         $routeService = new RoutesService();
-        $routes = collect($routeService->getRoutes())
-            ->filter(fn ($route) => isset($route['profit'])) //  see if routes exist
-            ->sortByDesc('profit') // highest profit first
-            ->take(250) // limit showing
-            ->values();
+        $routes = collect($routeService->getRoutes());
+
+        $routes = $routes->map(function ($route) use ($selectedScu) {
+
+            $routeScuOrigin = $route['scu_origin'] ?? 0;
+            $routeScuDest   = $route['scu_destination'] ?? 0;
+
+            $shipScu = $selectedScu > 0 ? $selectedScu : max($routeScuOrigin, $routeScuDest);
+
+            $usedScuOrigin = min($shipScu, $routeScuOrigin);
+            $usedScuDest   = min($shipScu, $routeScuDest);
+
+            $achievableScu = min($usedScuOrigin, $usedScuDest);
+
+            $buy  = $route['price_origin'] * $achievableScu;
+            $sell = $route['price_destination'] * $achievableScu;
+
+            $route['used_scu'] = $achievableScu;
+            $route['buy_total'] = $buy;
+            $route['sell_total'] = $sell;
+            $route['profit'] = $sell - $buy;
+
+            return $route;
+        })
+        ->filter(fn ($r) => $r['profit'] > 0)
+        ->sortByDesc('profit')
+        ->take(50)
+        ->values();
 
         $vehicleService = new VehiclesService();
         $vehicles = $vehicleService->getVehicles();
-
-        // Group ships by company
         $vehiclesGrouped = collect($vehicles)->groupBy('company_name');
 
-        return view('routes.index', compact('routes', 'vehiclesGrouped'));
+        return view('routes.index', compact('routes', 'vehiclesGrouped', 'selectedScu'));
     }
 
     public function dump()
