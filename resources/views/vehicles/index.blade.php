@@ -26,19 +26,90 @@
 
     <!-- TABLE -->
     <table class="table-uex">
+        @php
+            $sort = request('sort');
+            $direction = request('direction', 'asc');
+
+            function sortDirection($column, $sort, $direction) {
+                return $sort === $column && $direction === 'asc' ? 'desc' : 'asc';
+            }
+
+            function sortIndicator($column, $sort, $direction) {
+                if ($sort === $column) {
+                    $arrow = $direction === 'asc' ? '↑' : '↓';
+                    // wrap the arrow in a span with class 'yellow'
+                    return " <span class='yellow'>{$arrow}</span>";
+                }
+                return '';
+            }
+
+            // Filtered vehicles
+            $filteredVehicles = collect($vehicles)
+                ->filter(fn($v) => !request('company') || $v['company_name'] === request('company'));
+
+            // Apply sorting
+            if ($sort) {
+                $filteredVehicles = $direction === 'desc'
+                    ? $filteredVehicles->sortByDesc($sort)
+                    : $filteredVehicles->sortBy($sort);
+            }
+        @endphp
+
         <thead>
             <tr>
-                <th>Manufacturer</th>
-                <th>Ship</th>
-                <th>Cargo</th>
-                <th>Price</th>
+                <th>
+                    <a href="{{ request()->fullUrlWithQuery([
+                        'sort' => 'company_name',
+                        'direction' => sortDirection('company_name', $sort, $direction)
+                    ]) }}">
+                        Manufacturer{!! sortIndicator('company_name', $sort, $direction) !!}
+                    </a>
+                </th>
+
+                <th>
+                    <a href="{{ request()->fullUrlWithQuery([
+                        'sort' => 'name',
+                        'direction' => sortDirection('name', $sort, $direction)
+                    ]) }}">
+                        Ship{!! sortIndicator('name', $sort, $direction) !!}
+                    </a>
+                </th>
+
+                <th>
+                    <a href="{{ request()->fullUrlWithQuery([
+                        'sort' => 'scu',
+                        'direction' => sortDirection('scu', $sort, $direction)
+                    ]) }}">
+                        Cargo{!! sortIndicator('scu', $sort, $direction) !!}
+                    </a>
+                </th>
+
+                <th>
+                    <a href="{{ request()->fullUrlWithQuery([
+                        'sort' => 'price_buy',
+                        'direction' => sortDirection('price_buy', $sort, $direction)
+                    ]) }}">
+                        Price{!! sortIndicator('price_buy', $sort, $direction) !!}
+                    </a>
+                </th>
             </tr>
         </thead>
         <tbody>
             @php
-                $filteredVehicles = collect($vehicles)->filter(function ($v) {
-                    return !request('company') || $v['company_name'] === request('company');
-                });
+                $filteredVehicles = collect($vehicles)
+                    ->filter(function ($v) {
+                        return !request('company') || $v['company_name'] === request('company');
+                    });
+
+                // SORTING
+                $sort = request('sort');
+                $direction = request('direction', 'asc');
+
+                if ($sort) {
+                    $filteredVehicles = $direction === 'desc'
+                        ? $filteredVehicles->sortByDesc($sort)
+                        : $filteredVehicles->sortBy($sort);
+                }
             @endphp
             @foreach($filteredVehicles as $v)
                 @php
@@ -69,7 +140,6 @@
 
                     <td>
                         {{ $v['price_buy'] ? number_format($v['price_buy'], 0) : '-' }}
-                        {{-- {{ $v['price_buy'] }} --}}
                     </td>
                 </tr>
             @endforeach
