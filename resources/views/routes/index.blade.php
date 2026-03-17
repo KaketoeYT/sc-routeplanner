@@ -77,7 +77,7 @@
                         {{ $route['commodity_name'] }}
                     </td>
 
-                    <td>
+                    <td class="table-flex">
                         <div class="location-content">
                             <div class="location-names">
                                 <span class="location-dim">{{ $route['origin_star_system_name'] }}</span> 
@@ -103,7 +103,7 @@
                         </div>
                     </td>
 
-                    <td>
+                    <td class="table-flex">
                         <div class="location-content">
                             <div class="location-names">
                                 <span class="location-dim">{{ $route['destination_star_system_name'] }}</span> 
