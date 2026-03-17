@@ -1,5 +1,4 @@
 @php
-
     // cleanup the location name
     function shortenLocation($string) {
         // Take last part after " - "
@@ -16,6 +15,7 @@
 <x-layout>
 
     <filters>
+
         <div class="filter-group">
             <div class="custom-select-wrapper" id="ship-filter-wrapper">
                 <div class="custom-select-trigger">
@@ -43,11 +43,25 @@
                         @endif
                     @endforeach
                 </div>
-                
                 <input type="hidden" id="ship-filter" value="">
             </div>
         </div>
+
+        <div class="filter-group investment-filter">
+            <form method="GET">
+                <input 
+                    type="number" 
+                    name="investment" 
+                    class="filter-input"
+                    placeholder="MAX INVESTMENT (aUEC)" 
+                    value="{{ request('investment') }}"
+                    autocomplete="off"
+                >
+            </form>
+        </div>
+
     </filters>
+
 
     <table class="table-uex">
         <thead>

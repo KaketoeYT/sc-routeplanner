@@ -489,3 +489,82 @@ filters {
     background: #f1c40f;
 }
 
+
+
+
+
+
+
+
+
+
+
+/* =================================================
+   HORIZONTAL TOOLBAR LAYOUT
+================================================= */
+filters {
+    display: flex;         /* This puts them side-by-side */
+    align-items: flex-end; /* Aligns the bottoms of the inputs */
+    gap: 20px;             /* Space between the two filters */
+    margin-bottom: 1.5rem;
+    padding: 1.2rem;
+    background-color: #1a1a1a;
+    border: 1px solid #2d2d2d;
+    border-left: 4px solid #f1c40f;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 0 1 auto; /* Prevents them from stretching weirdly */
+}
+
+/* Labels via pseudo-elements */
+.filter-group:first-child::before { content: "SELECT SHIP"; }
+.investment-filter::before { content: "MAX INVESTMENT"; }
+
+.filter-group::before {
+    font-size: 0.65rem;
+    color: #666;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+}
+
+/* =================================================
+   CLEAN INPUT (NO ARROWS)
+================================================= */
+.filter-input {
+    background-color: #0f0f0f;
+    border: 1px solid #3d3d3d;
+    color: #f1c40f;
+    padding: 8px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    width: 240px;
+    height: 38px; /* Matches the height of your ship trigger */
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.filter-input:hover, .filter-input:focus {
+    border-color: #f1c40f;
+    background-color: #161616;
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.1);
+}
+
+/* Remove Arrows/Spinners */
+.filter-input::-webkit-outer-spin-button,
+.filter-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.filter-input[type=number] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+.filter-input::placeholder {
+    color: #444;
+    font-size: 0.75rem;
+}
