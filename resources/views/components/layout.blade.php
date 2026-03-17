@@ -15,8 +15,9 @@
 
     <nav class="main-nav">
         <ul class="nav-links">
-            <li><a href="{{ route('commodities.index') }}" class="{{ request()->routeIs('commodities.*') ? 'active' : '' }}">Commodities</a></li>
             <li><a href="{{ route('routes.index') }}" class="{{ request()->routeIs('routes.*') ? 'active' : '' }}">Routes</a></li>
+            <li><a href="{{ route('commodities.index') }}" class="{{ request()->routeIs('commodities.*') ? 'active' : '' }}">Commodities</a></li>
+            <li><a href="{{ route('vehicles.index') }}" class="{{ request()->routeIs('vehicles.*') ? 'active' : '' }}">Vehicles</a></li>
         </ul>
     </nav>
 

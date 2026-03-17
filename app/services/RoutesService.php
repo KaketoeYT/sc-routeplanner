@@ -21,7 +21,7 @@ class routesService
 
         //Take first 10 commodity IDs
         $commodityIds = collect($commodities)
-            ->take(50)
+            ->take(1)
             ->pluck('id')
             ->toArray();
 
