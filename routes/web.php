@@ -11,6 +11,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/commodities', [CommoditiesController::class, 'index'])->name('commodities.index');
 
 Route::get('/routes', [RoutesController::class, 'index'])->name('routes.index');
-Route::get('/routes/dump', [RoutesController::class, 'dump'])->name('routes.dump');
+Route::post('/routes/sync', [RoutesController::class, 'sync'])
+    ->name('routes.sync');
 
 Route::get('/vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
