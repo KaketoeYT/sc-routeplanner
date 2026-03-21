@@ -827,3 +827,42 @@ filters {
     height: 28px; /* Keeping your slim button preference */
     /* ... existing button styles ... */
 }
+
+
+/* =================================================
+   ALERT CLOSE BUTTON (UEX STYLE)
+================================================= */
+.alert-close {
+    margin-left: auto;       /* Pushes button to the far right */
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: currentColor;     /* Inherits green or red from parent alert */
+    font-size: 1.2rem;
+    line-height: 1;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-family: monospace;  /* Gives the '×' a more technical look */
+    opacity: 0.6;
+}
+
+.alert-close:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: currentColor;
+    box-shadow: 0 0 8px currentColor; /* Subtle glow in the alert's color */
+}
+
+.alert-close:active {
+    transform: scale(0.95);
+}
+
+/* Ensure the alert content doesn't crash into the button */
+.alert-content {
+    flex: 1;
+    margin-right: 15px;
+}

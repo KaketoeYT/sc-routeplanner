@@ -27,6 +27,7 @@
                 <span class="alert-title">SYSTEM UPDATE</span>
                 <span class="alert-msg">{{ session('success') }}</span>
             </div>
+            <button class="alert-close">&times;</button> {{-- close button --}}
         </div>
     @endif
 
@@ -37,6 +38,7 @@
                 <span class="alert-title">SYNC FAILURE</span>
                 <span class="alert-msg">{{ session('error') }}</span>
             </div>
+            <button class="alert-close">&times;</button> {{-- close button --}}
         </div>
     @endif
 
@@ -335,6 +337,7 @@
                     timestampEl.textContent = 'CAN_REFRESH_IN: NOW';
                     button.disabled = false;
                     button.classList.remove('is-cooldown');
+                    button.textContent = 'SYNC DATABASE'; // <-- add this line
                 } else {
                     // Cooldown active, show countdown
                     const minutes = Math.floor(remaining / 60000);
@@ -348,6 +351,22 @@
 
             // update every second
             const interval = setInterval(updateCooldown, 1000);
+        });
+    </script>
+
+    {{-- close buttons voor success/error notificaties --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeButtons = document.querySelectorAll('.alert-close');
+
+            closeButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const alert = btn.closest('.alert-uex');
+                    if (alert) {
+                        alert.remove(); // remove alert from DOM
+                    }
+                });
+            });
         });
     </script>
 </x-layout>
