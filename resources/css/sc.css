@@ -568,3 +568,262 @@ filters {
     color: #444;
     font-size: 0.75rem;
 }
+
+/* =================================================
+   ALERTS (UEX STYLE)
+================================================= */
+.alert-uex {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    margin-bottom: 1rem;
+    border: 1px solid;
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.alert-success {
+    background-color: rgba(74, 156, 93, 0.1);
+    border-color: #4a9c5d;
+    border-left: 4px solid #4a9c5d;
+    color: #4a9c5d;
+}
+
+.alert-error {
+    background-color: rgba(231, 76, 60, 0.1);
+    border-color: #e74c3c;
+    border-left: 4px solid #e74c3c;
+    color: #e74c3c;
+}
+
+.alert-icon {
+    font-size: 1.2rem;
+    margin-right: 15px;
+    font-weight: bold;
+}
+
+.alert-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.alert-title {
+    font-size: 0.65rem;
+    font-weight: 900;
+    opacity: 0.8;
+}
+
+.alert-msg {
+    font-size: 0.85rem;
+    color: #eee;
+}
+
+/* =================================================
+   SYNC BUTTON & GROUP
+================================================= */
+.sync-group {
+    margin-left: auto; /* Pushes the sync button to the far right of the filter bar */
+    align-items: flex-end;
+}
+
+.sync-group::before {
+    content: "DATABASE STATUS" !important;
+}
+
+.btn-sync {
+    background: transparent;
+    border: 1px solid #f1c40f;
+    color: #f1c40f;
+    padding: 8px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-sync:hover:not(:disabled) {
+    background: #f1c40f;
+    color: #000;
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.3);
+}
+
+.btn-sync:disabled {
+    border-color: #444;
+    color: #666;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.sync-timestamp {
+    font-family: monospace;
+    font-size: 0.65rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* Optional: Add a spinning pulse to the sync button icon on hover */
+.btn-sync:hover .sync-icon {
+    transform: rotate(180deg);
+}
+
+.sync-icon {
+    width: 8px;
+    height: 8px;
+    background-color: currentColor;
+    border-radius: 50%;
+    display: inline-block;
+    transition: transform 0.5s ease;
+}
+
+/* Cooldown state specifically */
+.btn-sync.is-cooldown {
+    border-style: dashed;
+}
+
+/* =================================================
+   TARGETED SLIM SYNC BUTTON
+================================================= */
+
+/* 1. Prevent the sync group from stretching to the full height of the bar */
+.sync-group {
+    margin-left: auto;
+    align-items: flex-end; 
+    justify-content: center; /* Centers the button vertically within the bar */
+    height: 100%; 
+}
+
+/* 2. Overwrite the height specifically for the sync button */
+.btn-sync {
+    height: 28px;          /* Reduced from 38px */
+    padding: 0 12px;       /* Slimmer horizontal padding */
+    font-size: 0.7rem;     /* Slightly smaller font to fit the slim look */
+    line-height: 1;
+    align-self: flex-end;  /* Keeps it aligned to the bottom like the others */
+}
+
+/* 3. Tighten the timestamp text below it */
+.sync-timestamp {
+    font-size: 0.6rem;
+    margin-top: 2px;
+    line-height: 1;
+}
+
+/* 4. Keep the icon small */
+.sync-icon {
+    width: 6px;
+    height: 6px;
+}
+
+/* New wrapper for horizontal alignment */
+.sync-controls {
+    display: flex;
+    align-items: center; /* Centers timer vertically relative to button */
+    gap: 15px;           /* Space between timer and button */
+}
+
+/* Update sync-group to handle the new width */
+.sync-group {
+    margin-left: auto;
+    align-items: flex-end; 
+}
+
+/* Adjust timestamp styling for side-by-side look */
+.sync-timestamp {
+    font-family: monospace;
+    font-size: 0.7rem;   /* Slightly larger for readability since it's not "sub-text" anymore */
+    color: #666;
+    margin-top: 0;       /* Remove the top margin used when it was underneath */
+    white-space: nowrap; /* Keep it on one line */
+    letter-spacing: 0.5px;
+}
+
+/* Ensure the button doesn't have extra margins */
+.sync-group form {
+    margin: 0;
+    display: flex;
+}
+
+/* =================================================
+   HORIZONTAL TOOLBAR LAYOUT (UPDATED)
+================================================= */
+filters {
+    display: flex;
+    align-items: flex-start; /* Align all titles to the top first */
+    gap: 20px;
+    margin-bottom: 1.5rem;
+    padding: 1.2rem; /* Equal spacing around the outside */
+    background-color: #1a1a1a;
+    border: 1px solid #2d2d2d;
+    border-left: 4px solid #f1c40f;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 0 1 auto;
+}
+
+/* Ensure all titles have the same height and line-height */
+.filter-group::before {
+    font-size: 0.65rem;
+    color: #666;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+    height: 14px; /* Fixed height to keep titles on equal level */
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+}
+
+/* Specific Labels */
+.filter-group:nth-child(1)::before { content: "SELECT SHIP"; }
+.investment-filter::before { content: "MAX INVESTMENT"; }
+.sync-group::before { content: "DATABASE STATUS"; }
+
+/* =================================================
+   SYNC GROUP ALIGNMENT
+================================================= */
+.sync-group {
+    margin-left: auto; /* Pushes to the right */
+}
+
+/* New controls wrapper from previous step */
+.sync-controls {
+    display: flex;
+    align-items: center; 
+    gap: 12px;
+    height: 38px; /* Force height to match the ship trigger and input */
+}
+
+.sync-timestamp {
+    font-family: monospace;
+    font-size: 0.65rem;
+    color: #666;
+    margin-top: 0; /* Remove top margin */
+    white-space: nowrap;
+}
+
+/* Ensure form/button don't add weird gaps */
+.sync-group form {
+    margin: 0;
+    display: flex;
+}
+
+.btn-sync {
+    height: 28px; /* Keeping your slim button preference */
+    /* ... existing button styles ... */
+}
