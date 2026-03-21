@@ -14,11 +14,29 @@
     </header>
 
     <nav class="main-nav">
-        <ul class="nav-links">
-            <li><a href="{{ route('routes.index') }}" class="{{ request()->routeIs('routes.*') ? 'active' : '' }}">Routes</a></li>
-            <li><a href="{{ route('commodities.index') }}" class="{{ request()->routeIs('commodities.*') ? 'active' : '' }}">Commodities</a></li>
-            <li><a href="{{ route('vehicles.index') }}" class="{{ request()->routeIs('vehicles.*') ? 'active' : '' }}">Vehicles</a></li>
-        </ul>
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li>
+                    <a href="{{ route('routes.index') }}" class="{{ request()->routeIs('routes.*') ? 'active' : '' }}">
+                        Routes
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="nav-links wip-links">
+                <li class="nav-status"><span>ALPHA</span></li>
+                <li>
+                    <a href="{{ route('commodities.index') }}" class="{{ request()->routeIs('commodities.*') ? 'active' : '' }}">
+                        Commodities
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('vehicles.index') }}" class="{{ request()->routeIs('vehicles.*') ? 'active' : '' }}">
+                        Vehicles
+                    </a>
+                </li>
+            </ul>
+        </div>
     </nav>
 
     <main>
