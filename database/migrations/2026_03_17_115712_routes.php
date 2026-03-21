@@ -14,13 +14,23 @@ return new class extends Migration
         Schema::create('routes', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('commodity_id');
+            $table->foreignId('commodity_id')->constrained();
 
-            $table->string('origin');
-            $table->string('destination');
+            $table->foreignId('origin_id')->constrained('locations');
+            $table->foreignId('destination_id')->constrained('locations');
 
-            $table->int('scu_origin');
-            $table->int('scu_destination');
+            $table->integer('scu_origin');
+            $table->integer('scu_destination');
+
+            $table->decimal('price_origin', 10, 2);
+            $table->decimal('price_destination', 10, 2);
+
+            $table->string('container_sizes_origin')->nullable();
+            $table->string('container_sizes_destination')->nullable();
+
+            $table->integer('distance')->nullable();
+
+            $table->timestamps();
         });
     }
 

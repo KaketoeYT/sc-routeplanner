@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Commodity extends Model
 {
-    public function Route(){
-        return $this->belongsTo(Route::class);
+    protected $fillable = [
+        'name',
+    ];
+    
+    public function routes()
+    {
+        return $this->hasMany(Route::class);
     }
 }
