@@ -1,4 +1,6 @@
 @php
+    //Error and success notifs testing
+
     // session(['success' => 'Previewing SUCCESS alert']);
     // session(['error' => 'Previewing ERROR alert']);
     // session(['success' => '']);

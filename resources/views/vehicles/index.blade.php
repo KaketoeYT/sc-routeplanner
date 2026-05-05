@@ -112,6 +112,7 @@
                 }
             @endphp
             @foreach($filteredVehicles as $v)
+
                 @php
                     // TYPE
                     $type = $v['is_ground_vehicle'] ? 'Ground' : 'Ship';
@@ -133,13 +134,12 @@
                         {{ $v['name'] }}
                     </td>
 
-                    <!-- CARGO -->
                     <td>
                         <span>{{ $v['scu'] ?? 0 }}</span>
                     </td>
 
                     <td>
-                        {{ $v['price_buy'] ? number_format($v['price_buy'], 0) : '-' }}
+                        {{ $v['price_buy'] ? number_format($v['price_buy'], 0) : "" }}
                     </td>
                 </tr>
             @endforeach

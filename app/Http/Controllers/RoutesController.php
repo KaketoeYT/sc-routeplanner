@@ -80,7 +80,7 @@ class RoutesController extends Controller
 
     public function sync()
     {
-        // Cooldown: 10 minutes
+        // Cooldown
         if (Cache::has('routes_last_synced')) {
             return back()->with('error', 'You must wait before syncing again.');
         }
