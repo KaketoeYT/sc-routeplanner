@@ -47,7 +47,7 @@
     <filters>
 
         {{-- Ship filter --}}
-        <div class="filter-group">
+        <div class="filter-group" data-label="SELECT SHIP">
             <div class="custom-select-wrapper" id="ship-filter-wrapper">
                 <div class="custom-select-trigger">
                     <span>ALL SHIPS</span>
@@ -59,7 +59,6 @@
                     
                     @foreach($vehiclesGrouped as $company => $ships)
                         @php
-                            // Only include ships that are released (not concept) AND have SCU > 0
                             $shipsWithScu = collect($ships)
                                 ->filter(fn($v) => ($v['scu'] > 0) && !$v['is_concept']);
                         @endphp
@@ -78,14 +77,113 @@
             </div>
         </div>
 
+        {{-- Origin Filter --}}
+        <div class="filter-group" data-label="ORIGIN">
+            <div class="custom-select-wrapper" id="origin-filter-wrapper">
+                <div class="custom-select-trigger">
+                    <span>
+                        @php
+                            $originLabel = 'ALL ORIGINS';
+                            if ($selectedOrigin) {
+                                [, $originValue] = explode('|', $selectedOrigin, 2);
+                                $originLabel = shortenLocation($originValue);
+                            }
+                        @endphp
+                        {{ $originLabel }}
+                    </span>
+                    <div class="arrow"></div>
+                </div>
+
+                <div class="custom-options">
+                    <div class="option {{ !$selectedOrigin ? 'selected' : '' }}" data-value="">
+                        ALL ORIGINS
+                    </div>
+                    
+                    @foreach($origins as $system => $planets)
+                        <div class="optgroup-label">// {{ $system }} SYSTEM</div>
+                        
+                        {{-- SYSTEM OPTION --}}
+                        <div class="option option-system" data-value="system|{{ $system }}">
+                            {{ $system }}
+                        </div>
+
+                        @foreach($planets as $planet => $locations)
+                            {{-- PLANET OPTION --}}
+                            <div class="option option-planet" data-value="planet|{{ $planet }}">
+                                > {{ $planet ? $planet : 'SPACE STATIONS / GATEWAYS' }}
+                            </div>
+
+                            @foreach($locations as $location)
+                                {{-- TERMINAL OPTION --}}
+                                <div class="option option-terminal" data-value="terminal|{{ $location }}">
+                                    - {{ shortenLocation($location) }}
+                                </div>
+                            @endforeach
+                        @endforeach
+                    @endforeach
+                </div>
+                <input type="hidden" id="origin-filter" value="{{ $selectedOrigin }}">
+            </div>
+        </div>
+
+        {{-- Destination Filter --}}
+        <div class="filter-group" data-label="DESTINATION">
+            <div class="custom-select-wrapper" id="destination-filter-wrapper">
+                <div class="custom-select-trigger">
+                    <span>
+                        @php
+                            $destinationLabel = 'ALL DESTINATIONS';
+                            if ($selectedDestination) {
+                                [, $destinationValue] = explode('|', $selectedDestination, 2);
+                                $destinationLabel = shortenLocation($destinationValue);
+                            }
+                        @endphp
+                        {{ $destinationLabel }}
+                    </span>
+                    <div class="arrow"></div>
+                </div>
+
+                <div class="custom-options">
+                    <div class="option {{ !$selectedDestination ? 'selected' : '' }}" data-value="">
+                        ALL DESTINATIONS
+                    </div>
+
+                    @foreach($destinations as $system => $planets)
+                        <div class="optgroup-label">// {{ $system }} SYSTEM</div>
+
+                        {{-- SYSTEM OPTION --}}
+                        <div class="option option-system" data-value="system|{{ $system }}">
+                            {{ $system }}
+                        </div>
+
+                        @foreach($planets as $planet => $locations)
+                            {{-- PLANET OPTION --}}
+                            <div class="option option-planet" data-value="planet|{{ $planet }}">
+                                > {{ $planet ? $planet : 'SPACE STATIONS / GATEWAYS' }}
+                            </div>
+
+                            @foreach($locations as $location)
+                                {{-- TERMINAL OPTION --}}
+                                <div class="option option-terminal" data-value="terminal|{{ $location }}">
+                                    - {{ shortenLocation($location) }}
+                                </div>
+                            @endforeach
+                        @endforeach
+                    @endforeach
+                </div>
+                <input type="hidden" id="destination-filter" value="{{ $selectedDestination }}">
+            </div>
+        </div>
+
         {{-- investment filter --}}
-        <div class="filter-group investment-filter">
+        <div class="filter-group investment-filter" data-label="MAX INVESTMENT (aUEC)">
             <form method="GET">
                 <input 
                     type="number" 
                     name="investment" 
                     class="filter-input"
-                    placeholder="MAX INVESTMENT (aUEC)" 
+                    style="width: 100%; box-sizing: border-box;"
+                    placeholder="e.g. 500000" 
                     value="{{ request('investment') }}"
                     autocomplete="off"
                 >
@@ -97,19 +195,19 @@
             $cooldownActive = Cache::has('routes_last_synced');
         @endphp
 
-        <div class="filter-group sync-group">
+        <div class="filter-group sync-group" data-label="DATABASE STATUS">
             <div class="sync-controls">
                 @if($lastSynced)
-                    <span id="sync-timestamp" class="sync-timestamp" data-timestamp="{{ $lastSynced->timestamp }}">
+                    <span id="sync-timestamp" class="sync-timestamp" data-timestamp="{{ $lastSynced->timestamp }}" style="font-size: 0.75rem; color: #888; display: block; margin-bottom: 5px;">
                         {{ strtoupper($lastSynced->diffForHumans()) }}
                     </span>
                 @else
-                    <span class="sync-timestamp">CAN_REFRESH_IN: NOW</span>
+                    <span class="sync-timestamp" style="font-size: 0.75rem; color: #888; display: block; margin-bottom: 5px;">CAN_REFRESH_IN: NOW</span>
                 @endif
 
                 <form method="POST" action="{{ route('routes.sync') }}">
                     @csrf
-                    <button type="submit" class="btn-sync {{ $cooldownActive ? 'is-cooldown' : '' }}" {{ $cooldownActive ? 'disabled' : '' }}>
+                    <button type="submit" class="btn-sync {{ $cooldownActive ? 'is-cooldown' : '' }}" {{ $cooldownActive ? 'disabled' : '' }} style="width: 100%; padding: 8px; background: #222; border: 1px solid #3d3d3d; color: #f1c40f; cursor: pointer;">
                         <span class="sync-icon"></span>
                         {{ $cooldownActive ? 'COOLDOWN ACTIVE' : 'SYNC DATABASE' }}
                     </button>
@@ -279,43 +377,88 @@
         });
     </script>
 
-    {{-- custom ship dropdown --}}
+    {{-- Custom Dropdown --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const wrapper = document.querySelector('.custom-select-wrapper');
-            const trigger = wrapper.querySelector('.custom-select-trigger');
-            const options = wrapper.querySelectorAll('.option');
-            const hiddenInput = document.getElementById('ship-filter');
-            const triggerText = trigger.querySelector('span');
+        document.addEventListener('DOMContentLoaded', function () {
 
-            // Toggle Dropdown
-            trigger.addEventListener('click', () => {
-                wrapper.classList.toggle('open');
-            });
+            function initCustomDropdown(wrapperId, inputId, queryKey) {
 
-            // Close dropdown when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!wrapper.contains(e.target)) wrapper.classList.remove('open');
-            });
+                const wrapper = document.getElementById(wrapperId);
 
-            // Handle Option Selection
-            options.forEach(option => {
-                option.addEventListener('click', function() {
-                    const val = this.dataset.value;
-                    
-                    // UI Updates
-                    options.forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                    triggerText.innerText = this.innerText;
-                    wrapper.classList.remove('open');
+                if (!wrapper) return;
 
-                    // Set value and manually trigger the 'change' event for your existing script
-                    hiddenInput.value = val;
-                    window.location.href = `?ship_scu=${val}`;
+                const trigger = wrapper.querySelector('.custom-select-trigger');
+                const options = wrapper.querySelectorAll('.option');
+                const hiddenInput = document.getElementById(inputId);
+                const triggerText = trigger.querySelector('span');
+
+                // Open / close
+                trigger.addEventListener('click', () => {
+                    wrapper.classList.toggle('open');
                 });
-            });
+
+                // Click outside
+                document.addEventListener('click', (e) => {
+                    if (!wrapper.contains(e.target)) {
+                        wrapper.classList.remove('open');
+                    }
+                });
+
+                // Option click
+                options.forEach(option => {
+
+                    option.addEventListener('click', function () {
+
+                        const val = this.dataset.value;
+
+                        options.forEach(opt => opt.classList.remove('selected'));
+
+                        this.classList.add('selected');
+
+                        triggerText.innerText = this.innerText;
+
+                        wrapper.classList.remove('open');
+
+                        hiddenInput.value = val;
+
+                        // Preserve existing params
+                        const params = new URLSearchParams(window.location.search);
+
+                        if (val) {
+                            params.set(queryKey, val);
+                        } else {
+                            params.delete(queryKey);
+                        }
+
+                        window.location.href = `?${params.toString()}`;
+                    });
+
+                });
+            }
+
+            // Ship
+            initCustomDropdown(
+                'ship-filter-wrapper',
+                'ship-filter',
+                'ship_scu'
+            );
+
+            // Origin
+            initCustomDropdown(
+                'origin-filter-wrapper',
+                'origin-filter',
+                'origin'
+            );
+
+            // Destination
+            initCustomDropdown(
+                'destination-filter-wrapper',
+                'destination-filter',
+                'destination'
+            );
+
         });
-    </script>
+        </script>
 
     {{-- realtime database cooldown --}}
     <script>

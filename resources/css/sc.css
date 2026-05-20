@@ -899,3 +899,76 @@ filters {
     letter-spacing: 1px;
     font-weight: 800;
 }
+
+/* =================================================
+   FILTERS SECTION
+================================================= */
+filters {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #1a1a1a;
+    border: 1px solid #2d2d2d;
+    border-left: 4px solid #f1c40f; /* Accent "active" bar */
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+}
+
+/* Fix: dynamically grab the label text instead of hardcoding "SELECT SHIP" */
+.filter-group::before {
+    content: attr(data-label);
+    font-size: 0.65rem;
+    color: #666;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+}
+
+/* =================================================
+   CUSTOM DROPDOWN HIERARCHY
+================================================= */
+/* System Level (Top Tier) */
+.option.option-system {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 0.85rem;
+    padding-top: 12px;
+    letter-spacing: 0.5px;
+}
+
+/* Planet Level (Folder Tier) */
+.option.option-planet {
+    padding-left: 1.25rem;
+    color: #d4d4d4; /* Brighter to pop as a parent */
+    font-size: 0.85rem; /* Slightly larger */
+    font-weight: 600; /* Bolder */
+    margin-top: 8px; /* Adds breathing room above a new planet group */
+    background-color: rgba(255, 255, 255, 0.03); /* Very subtle background band */
+    border-left: 2px solid #444; /* Sci-fi style structural line */
+}
+
+/* Terminal Level (Item Tier) */
+.option.option-terminal {
+    padding-left: 2.25rem;
+    color: #777; /* Dimmer so they sit 'inside' the folder */
+    font-size: 0.8rem;
+    border-left: 2px solid transparent; /* Keeps text aligned with the planet hover state */
+}
+
+/* Make hover/selected states explicitly clear */
+.option.option-terminal:hover, 
+.option.option-terminal.selected,
+.option.option-planet:hover,
+.option.option-planet.selected {
+    color: #f1c40f;
+    background-color: rgba(241, 196, 15, 0.05);
+    border-left: 2px solid #f1c40f;
+}

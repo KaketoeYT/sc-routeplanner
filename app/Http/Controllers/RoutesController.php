@@ -16,71 +16,201 @@ class RoutesController extends Controller
     {
         $selectedScu = (int) $request->get('ship_scu', 0);
 
-        // $routeService = new RoutesService();
-        // $routes = collect($routeService->getRoutes());
+        $selectedOrigin = $request->get('origin');
+        $selectedDestination = $request->get('destination');
 
-        $routes = Route::with(['commodity', 'origin', 'destination'])->get();
+        /*
+        |--------------------------------------------------------------------------
+        | Build Route Query
+        |--------------------------------------------------------------------------
+        */
+
+        $query = Route::with(['commodity', 'origin', 'destination']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Origin Filter (system / planet / terminal)
+        |--------------------------------------------------------------------------
+        */
+
+        if ($selectedOrigin && str_contains($selectedOrigin, '|')) {
+
+            [$type, $value] = explode('|', $selectedOrigin, 2);
+
+            $query->whereHas('origin', function ($q) use ($type, $value) {
+
+                switch ($type) {
+
+                    case 'system':
+                        $q->where('star_system_name', $value);
+                        break;
+
+                    case 'planet':
+                        $q->where('planet_name', $value);
+                        break;
+
+                    case 'terminal':
+                        $q->where('terminal_name', $value);
+                        break;
+                }
+            });
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Destination Filter
+        |--------------------------------------------------------------------------
+        */
+
+        if ($selectedDestination && str_contains($selectedDestination, '|')) {
+
+            [$type, $value] = explode('|', $selectedDestination, 2);
+
+            $query->whereHas('destination', function ($q) use ($type, $value) {
+
+                switch ($type) {
+
+                    case 'system':
+                        $q->where('star_system_name', $value);
+                        break;
+
+                    case 'planet':
+                        $q->where('planet_name', $value);
+                        break;
+
+                    case 'terminal':
+                        $q->where('terminal_name', $value);
+                        break;
+                }
+            });
+        }
+
+        $routes = $query->get();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Sync Timestamp
+        |--------------------------------------------------------------------------
+        */
 
         $lastSynced = Cache::get('routes_last_synced');
 
+        /*
+        |--------------------------------------------------------------------------
+        | Compute Route Values
+        |--------------------------------------------------------------------------
+        */
+
         $routes = $routes->map(function ($route) use ($selectedScu) {
 
-        $routeScuOrigin = $route->scu_origin;
-        $routeScuDest   = $route->scu_destination;
+            $routeScuOrigin = $route->scu_origin;
+            $routeScuDest   = $route->scu_destination;
 
-        $shipScu = $selectedScu > 0 ? $selectedScu : max($routeScuOrigin, $routeScuDest);
+            $shipScu = $selectedScu > 0
+                ? $selectedScu
+                : max($routeScuOrigin, $routeScuDest);
 
-        $usedScuOrigin = min($shipScu, $routeScuOrigin);
-        $usedScuDest   = min($shipScu, $routeScuDest);
+            $usedScuOrigin = min($shipScu, $routeScuOrigin);
+            $usedScuDest   = min($shipScu, $routeScuDest);
 
-        $achievableScu = min($usedScuOrigin, $usedScuDest);
+            $achievableScu = min($usedScuOrigin, $usedScuDest);
 
-        $buy  = $route->price_origin * $achievableScu;
-        $sell = $route->price_destination * $achievableScu;
+            $buy  = $route->price_origin * $achievableScu;
+            $sell = $route->price_destination * $achievableScu;
 
-        return [
-            'commodity_name' => $route->commodity->name,
+            return [
+                'commodity_name' => $route->commodity->name,
 
-            'origin_star_system_name' => $route->origin->star_system_name,
-            'origin_planet_name' => $route->origin->planet_name,
-            'origin_terminal_name' => $route->origin->terminal_name,
+                'origin_star_system_name' => $route->origin->star_system_name,
+                'origin_planet_name'      => $route->origin->planet_name,
+                'origin_terminal_name'    => $route->origin->terminal_name,
 
-            'destination_star_system_name' => $route->destination->star_system_name,
-            'destination_planet_name' => $route->destination->planet_name,
-            'destination_terminal_name' => $route->destination->terminal_name,
+                'destination_star_system_name' => $route->destination->star_system_name,
+                'destination_planet_name'      => $route->destination->planet_name,
+                'destination_terminal_name'    => $route->destination->terminal_name,
 
-            'container_sizes_origin' => $route->container_sizes_origin,
-            'container_sizes_destination' => $route->container_sizes_destination,
+                'container_sizes_origin'      => $route->container_sizes_origin,
+                'container_sizes_destination' => $route->container_sizes_destination,
 
-            'scu_origin' => $route->scu_origin,
-            'scu_destination' => $route->scu_destination,
+                'scu_origin'      => $route->scu_origin,
+                'scu_destination' => $route->scu_destination,
 
-            'price_origin' => $route->price_origin,
-            'price_destination' => $route->price_destination,
+                'price_origin'      => $route->price_origin,
+                'price_destination' => $route->price_destination,
 
-            'distance' => $route->distance,
+                'distance' => $route->distance,
 
-            'used_scu' => $achievableScu,
-            'buy_total' => $buy,
-            'sell_total' => $sell,
-            'profit' => $sell - $buy,
-        ];
-    })
-    ->filter(fn ($r) => $r['profit'] > 0)
-    ->sortByDesc('profit')
-    ->take(50)
-    ->values();
+                'used_scu'    => $achievableScu,
+                'buy_total'   => $buy,
+                'sell_total'  => $sell,
+                'profit'      => $sell - $buy,
+            ];
+        })
+        ->filter(fn ($r) => $r['profit'] > 0)
+        ->sortByDesc('profit')
+        ->take(50)
+        ->values();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Vehicles
+        |--------------------------------------------------------------------------
+        */
 
         $vehicleService = new VehiclesService();
         $vehicles = $vehicleService->getVehicles();
-        $vehiclesGrouped = collect($vehicles)->groupBy('company_name');
 
-        return view('routes.index', compact('routes', 'vehiclesGrouped', 'selectedScu', 'lastSynced'));
+        $vehiclesGrouped = collect($vehicles)
+            ->groupBy('company_name');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Cached Location Hierarchy (IMPORTANT OPTIMIZATION)
+        |--------------------------------------------------------------------------
+        */
+
+        $locationsGrouped = Cache::remember('locations_grouped', 3600, function () {
+
+            return Location::orderBy('star_system_name')
+                ->orderBy('planet_name')
+                ->orderBy('terminal_name')
+                ->get()
+                ->groupBy('star_system_name')
+                ->map(function ($system) {
+
+                    return $system->groupBy('planet_name')
+                        ->map(function ($planet) {
+
+                            return $planet->pluck('terminal_name')
+                                ->unique()
+                                ->values();
+                        });
+                });
+        });
+
+        $origins = $locationsGrouped;
+        $destinations = $locationsGrouped;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Return View
+        |--------------------------------------------------------------------------
+        */
+
+        return view('routes.index', compact(
+            'routes',
+            'vehiclesGrouped',
+            'selectedScu',
+            'lastSynced',
+            'origins',
+            'destinations',
+            'selectedOrigin',
+            'selectedDestination'
+        ));
     }
 
     public function sync()
     {
-        // Cooldown
         if (Cache::has('routes_last_synced')) {
             return back()->with('error', 'You must wait before syncing again.');
         }
@@ -125,7 +255,6 @@ class RoutesController extends Controller
             );
         }
 
-        // Store cooldown timestamp (10 minutes)
         Cache::put('routes_last_synced', now(), now()->addMinutes(10));
 
         return back()->with('success', 'Routes synced successfully!');
